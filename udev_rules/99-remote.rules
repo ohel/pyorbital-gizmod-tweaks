@@ -1,0 +1,2 @@
+ACTION=="add", ENV{SUBSYSTEM}=="input", ENV{ID_VENDOR}=="06b4", ENV{ID_MODEL}=="1c70", ENV{DEVNAME}=="*event*", SYMLINK="input/remote", GROUP="wheel", MODE="0660"
+ACTION=="add", ENV{SUBSYSTEM}=="input", ENV{ID_VENDOR}=="06b4", ENV{ID_MODEL}=="1c70", ENV{DEVNAME}=="*js*", RUN+="/bin/bash /opt/udev/scripts/remote_js_remove.sh $name"

@@ -1,0 +1,51 @@
+--- remote.py.orig	2014-06-24 01:45:14.000000000 +0300
++++ remote.py	2015-08-29 16:33:49.217076742 +0300
+@@ -10,6 +10,7 @@
+ import os
+ import re
+ import errno
++import socket
+ 
+ from gi.repository import GLib
+ 
+@@ -131,6 +132,7 @@
+     _commands = {}
+ 
+     def __init__(self, app):
++        app.pyorbital_has_socket = False
+         super(FIFOControl, self).__init__()
+         self.app = app
+ 
+@@ -257,11 +259,20 @@
+         if value[0] == '-':
+             change = -change
+         volume = app.player.volume + change
++        # when raising volume from 0.01 upwards, raise it to 0.05 instead of 0.06
++        if volume > 0.059 and volume < 0.061 and change > 0.049 and change < 0.051: volume = 0.05
+     else:
+         try:
+             volume = (int(value) / 100.0)
+         except ValueError:
+             return
++    # when lowering volume, make 0.01 the minimum, keeping 1.0 the maximum
++    volume = min(1.0, max(0.01, volume))
++    if not app.pyorbital_has_socket:
++        app.pyorbital_sendsocket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
++        app.pyorbital_has_socket = not app.pyorbital_sendsocket.connect_ex("/dev/shm/pyorbital")
++    if app.pyorbital_has_socket:
++        app.pyorbital_sendsocket.send("volume " + str(volume) + "\n")
+     app.player.volume = min(1.0, max(0.0, volume))
+ 
+ 
+@@ -271,6 +282,11 @@
+ 
+     if value in ["t", "toggle"]:
+         order.set_shuffle(not order.get_shuffle())
++        if not self.has_socket:
++            self.sendsocket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
++            self.has_socket = not self.sendsocket.connect_ex("/dev/shm/pyorbital")
++        if self.has_socket:
++            self.sendsocket.send("order " + str(order.get_active()) + "\n")
+         return
+ 
+     try:

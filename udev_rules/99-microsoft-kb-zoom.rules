@@ -1,0 +1,1 @@
+ACTION=="add", ENV{ID_VENDOR}=="Microsoft", ENV{SUBSYSTEM}=="input", ENV{ID_INPUT_KEYBOARD}=="1", ENV{ID_USB_INTERFACE_NUM}=="01", SYMLINK="input/mskb-zoom", GROUP="wheel", MODE="0660"

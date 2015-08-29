@@ -1,0 +1,25 @@
+--- GizmoRegistrar.py_orig	2007-11-07 14:22:02.000000000 +0200
++++ GizmoRegistrar.py	2014-06-30 03:09:15.800607214 +0300
+@@ -32,6 +32,8 @@
+ 
+ from GizmoDaemon import *
+ from GizmoDeviceStrings import *
++import ReadSymLink
++RAPOO_MOUSE_DEVICE = ReadSymLink.readlinkabs("/dev/input/evdev-mouse")
+ 
+ ############################
+ # Visualization Class definition
+@@ -95,6 +97,13 @@
+ 			Gizmod.printNiceScriptRegister(0, "LIRC", self.Device.DeviceName, self.Device.FileName, hex((self.Device.DeviceIDVendor)), hex((self.Device.DeviceIDProduct)))
+ 		else:
+ 			Gizmod.printNiceScriptRegister(0, "Standard", self.Device.DeviceName, self.Device.FileName, hex((self.Device.DeviceIDVendor)), hex((self.Device.DeviceIDProduct)))
++			if self.Device.DeviceName == "HID 06b4:1c70":
++				self.Device.grabExclusiveAccess(True)
++			elif self.Device.DeviceName == "RAPOO RAPOO 5G Wireless Device":
++				if self.Device.FileName == RAPOO_MOUSE_DEVICE:
++					Gizmod.Mice.append(self.Device)
++				else:
++					self.Device.grabExclusiveAccess(True) # keyboard device
+ 
+ 	def handleDeviceRemoval(self):
+ 		"""
