@@ -1,0 +1,6 @@
+cmake -DCMAKE_INSTALL_PREFIX=/opt/programs/gizmod/ -DPYTHON_INCLUDE_DIR=/usr/include/python2.7 -DPYTHON_LIBRARY=/usr/lib/libpython2.7.so
+
+If linking complains about missing boost for example ("DSO missing from command line"), add the library as a parameter (parameters are not switches, just the .so file location):
+gizmod/CMakeFiles/gizmod.dir/link.txt
+
+libGizmod.so is not copied on make install, copy it manually.

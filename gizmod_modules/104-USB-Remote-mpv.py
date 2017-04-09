@@ -7,7 +7,7 @@ import ReadSymLink
 ENABLED = True
 VERSION_NEEDED = 3.2
 INTERESTED_CLASSES = [GizmoEventClass.Standard]
-MP_CONTROL_FILE = os.path.expanduser("~") + "/ramdisk/mpvfifo"
+MP_CONTROL_FILE = "/dev/shm/mpvfifo"
 REMOTE_DEVICE = ReadSymLink.readlinkabs("/dev/input/remote")
 
 class USBRemoteMP(GizmoScriptDefault):
