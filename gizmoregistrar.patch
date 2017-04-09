@@ -1,24 +1,30 @@
---- GizmoRegistrar.py_orig	2007-11-07 14:22:02.000000000 +0200
-+++ GizmoRegistrar.py	2014-06-30 03:09:15.800607214 +0300
-@@ -32,6 +32,8 @@
+--- GizmoRegistrar.py.original	2007-11-07 14:22:02.000000000 +0200
++++ GizmoRegistrar.py	2017-04-09 21:31:02.809477782 +0300
+@@ -32,6 +32,11 @@
  
  from GizmoDaemon import *
  from GizmoDeviceStrings import *
 +import ReadSymLink
-+RAPOO_MOUSE_DEVICE = ReadSymLink.readlinkabs("/dev/input/evdev-mouse")
++MOUSE_DEVICE = ReadSymLink.readlinkabs("/dev/input/evdev-mouse")
++MOUSE_DEVICE_NAME = "Logitech MX Master"
++# Remote control device ID. This one is for a Sunwave generic remote.
++REMOTE_DEVICE_ID = "HID 06b4:1c70"
  
  ############################
  # Visualization Class definition
-@@ -95,6 +97,13 @@
+@@ -95,6 +100,16 @@
  			Gizmod.printNiceScriptRegister(0, "LIRC", self.Device.DeviceName, self.Device.FileName, hex((self.Device.DeviceIDVendor)), hex((self.Device.DeviceIDProduct)))
  		else:
  			Gizmod.printNiceScriptRegister(0, "Standard", self.Device.DeviceName, self.Device.FileName, hex((self.Device.DeviceIDVendor)), hex((self.Device.DeviceIDProduct)))
-+			if self.Device.DeviceName == "HID 06b4:1c70":
++                        print("Registering device: " + self.Device.DeviceName)
++                        if self.Device.DeviceName == REMOTE_DEVICE_ID:
 +				self.Device.grabExclusiveAccess(True)
-+			elif self.Device.DeviceName == "RAPOO RAPOO 5G Wireless Device":
-+				if self.Device.FileName == RAPOO_MOUSE_DEVICE:
++                        elif self.Device.DeviceName == MOUSE_DEVICE_NAME:
++				if self.Device.FileName == MOUSE_DEVICE:
++                                        print("Adding mouse device: " + MOUSE_DEVICE)
 +					Gizmod.Mice.append(self.Device)
 +				else:
++                                        print("Found keyboard device for " + MOUSE_DEVICE_NAME)
 +					self.Device.grabExclusiveAccess(True) # keyboard device
  
  	def handleDeviceRemoval(self):
